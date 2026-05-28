@@ -45,9 +45,10 @@ Você escolhe o banco — o desafio não impõe nenhum. Algumas opções:
 | `POST` | `/tarefas` | Criar tarefa | `201` | `400` |
 | `GET` | `/tarefas` | Listar todas | `200` | — |
 | `GET` | `/tarefas/{id}` | Buscar por ID | `200` | `404` |
-| `PUT` | `/tarefas/{id}` | Atualizar | `200` | `400`, `404` |
 | `DELETE` | `/tarefas/{id}` | Remover | `204` | `404` |
 | `PATCH` | `/tarefas/{id}/concluir` | Marcar como concluída | `200` | `404` |
+
+> Não há endpoint de atualização — a única transição de estado de uma tarefa é concluída ou não concluída, coberta pelo `PATCH`. Se precisar corrigir uma tarefa, delete e crie novamente.
 
 ---
 
@@ -68,6 +69,23 @@ Resposta `201`:
   "titulo": "Estudar API REST",
   "descricao": "Ler a documentação do HTTP",
   "concluida": false,
+  "criadaEm": "2026-05-25"
+}
+```
+
+### Marcar como concluída
+
+```bash
+curl -X PATCH http://localhost:8080/tarefas/1/concluir
+```
+
+Resposta `200`:
+```json
+{
+  "id": 1,
+  "titulo": "Estudar API REST",
+  "descricao": "Ler a documentação do HTTP",
+  "concluida": true,
   "criadaEm": "2026-05-25"
 }
 ```
@@ -136,6 +154,7 @@ Consulte o [CONTRIBUTING.md](../../CONTRIBUTING.md) para ver como compartilhar s
 - **Valide os campos de entrada** antes de salvar no banco
 - **Quando um ID não existe, retorne `404`** — nunca `500`
 - **Status `204` não tem body** — não retorne JSON no DELETE
+- **PATCH sem body** — o endpoint `/concluir` não recebe nada no body, só o `id` na URL
 - **Testes automatizados e Docker são diferenciais**, não requisitos
 
 Boa sorte — vai ficar ótimo! 💙
