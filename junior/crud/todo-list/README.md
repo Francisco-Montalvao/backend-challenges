@@ -1,37 +1,59 @@
-# To-Do List API
+# 🟢 Desafio Júnior: To-Do List API
 
 **Nível:** Júnior | **Tema:** CRUD | **Tempo estimado:** 2 a 3 dias
 
 Bem-vindo! Este é um ótimo ponto de partida para praticar backend. Você vai construir uma API REST completa para gerenciar tarefas — um CRUD clássico que consolida seus conhecimentos sobre HTTP, banco de dados e organização de código.
 
-## O que você vai construir
+---
+
+## 📚 O que você vai construir
 
 Uma startup quer um sistema simples para seus funcionários gerenciarem tarefas do dia a dia. Você vai criar a API que alimenta essa aplicação.
 
-## Modelo de Dados
+---
+
+## 🗂️ Modelo de Dados
 
 | Campo | Tipo | Obrigatório | Regra |
 |---|---|---|---|
 | `id` | inteiro | gerado auto | — |
-| `titulo` | texto | sim | máx. 100 caracteres |
-| `descricao` | texto | não | — |
+| `titulo` | texto | ✅ | máx. 100 caracteres |
+| `descricao` | texto | ❌ | — |
 | `concluida` | booleano | — | padrão `false` |
 | `criadaEm` | data | gerada auto | não pode ser alterada |
 
-## Endpoints
+---
+
+## 🗄️ Banco de Dados
+
+Você escolhe o banco — o desafio não impõe nenhum. Algumas opções:
+
+| Banco | Quando usar |
+|---|---|
+| **H2 / SQLite** | Quer começar rápido sem instalar nada |
+| **PostgreSQL** | Quer simular um ambiente mais próximo do mercado |
+| **MySQL** | Já tem familiaridade com ele |
+
+> Banco em memória funciona para começar e facilita o setup. Quando se sentir confortável, vale migrar para um banco persistente.
+
+---
+
+## 🔌 Endpoints
 
 | Método | Rota | Descrição | Sucesso | Erro |
 |---|---|---|---|---|
-| POST | `/tarefas` | Criar tarefa | 201 | 400 |
-| GET | `/tarefas` | Listar todas | 200 | — |
-| GET | `/tarefas/{id}` | Buscar por ID | 200 | 404 |
-| PUT | `/tarefas/{id}` | Atualizar | 200 | 400, 404 |
-| DELETE | `/tarefas/{id}` | Remover | 204 | 404 |
-| PATCH | `/tarefas/{id}/concluir` | Marcar como concluída | 200 | 404 |
+| `POST` | `/tarefas` | Criar tarefa | `201` | `400` |
+| `GET` | `/tarefas` | Listar todas | `200` | — |
+| `GET` | `/tarefas/{id}` | Buscar por ID | `200` | `404` |
+| `PUT` | `/tarefas/{id}` | Atualizar | `200` | `400`, `404` |
+| `DELETE` | `/tarefas/{id}` | Remover | `204` | `404` |
+| `PATCH` | `/tarefas/{id}/concluir` | Marcar como concluída | `200` | `404` |
 
-## Exemplos de requisição
+---
 
-**Criar tarefa**
+## ✅ Exemplos de requisição
+
+### Criar tarefa
 
 ```bash
 curl -X POST http://localhost:8080/tarefas \
@@ -39,8 +61,8 @@ curl -X POST http://localhost:8080/tarefas \
   -d '{"titulo": "Estudar API REST", "descricao": "Ler a documentação do HTTP"}'
 ```
 
+Resposta `201`:
 ```json
-// 201 Created
 {
   "id": 1,
   "titulo": "Estudar API REST",
@@ -50,51 +72,70 @@ curl -X POST http://localhost:8080/tarefas \
 }
 ```
 
-**Buscar ID inexistente**
+---
 
-```bash
-curl http://localhost:8080/tarefas/99
-```
+## ❌ Exemplos de erro
+
+### Tarefa não encontrada — `404`
 
 ```json
-// 404 Not Found
-{ "erro": "Tarefa com id 99 não encontrada." }
+{
+  "timestamp": "2026-05-27T15:13:13.922031",
+  "status": 404,
+  "mensagem": "Tarefa com id 99 não encontrada"
+}
 ```
 
-## Qualidade do código
+### Erro de validação em campos — `400`
 
-Organize em camadas:
+```json
+{
+  "timestamp": "2026-05-27T15:14:38.917029",
+  "status": 400,
+  "mensagem": "Erro de validação em campos",
+  "erros": [
+    {
+      "campo": "titulo",
+      "mensagem": "Titulo não pode estar vazio"
+    },
+    {
+      "campo": "titulo",
+      "mensagem": "Titulo deve ter no máximo 100 caracteres"
+    }
+  ]
+}
+```
+
+---
+
+## 🏗️ Organização do código
+
+Organize em camadas — a estrutura vai variar conforme a linguagem, mas uma referência possível é:
 
 ```
 controller  →  recebe a requisição e responde HTTP
 service     →  aplica as regras de negócio
 repository  →  acessa o banco de dados
+model       →  representa a entidade no banco
+dto         →  objetos de entrada e saída da API
+exception   →  exceções customizadas e handler global
 ```
 
 Começar com tudo em um arquivo único está ok — reorganize quando sentir que está ficando difícil de ler.
 
-## Critérios de avaliação
+---
 
-| Critério | Peso |
-|---|---|
-| Todos os endpoints funcionando corretamente | 40% |
-| Validação e erros com status HTTP corretos | 25% |
-| Organização do código | 20% |
-| README explicando como rodar o projeto | 15% |
+## 🚀 Como entregar
 
-## Como entregar
+Consulte o [CONTRIBUTING.md](../../CONTRIBUTING.md) para ver como compartilhar sua solução.
 
-1. Suba sua solução em um repositório público
-2. Inclua um README no repositório explicando como rodar localmente
-3. Abra uma [Discussion](https://github.com/Francisco-Montalvao/backend-challenges/discussions) com o link da sua solução
+---
 
-> Você escolhe o banco de dados — SQLite, PostgreSQL, MySQL. Banco em memória também funciona para começar.
+## 💡 Dicas
 
-## Dicas finais
+- **Valide os campos de entrada** antes de salvar no banco
+- **Quando um ID não existe, retorne `404`** — nunca `500`
+- **Status `204` não tem body** — não retorne JSON no DELETE
+- **Testes automatizados e Docker são diferenciais**, não requisitos
 
-- Valide os campos de entrada antes de salvar no banco
-- Quando um ID não existe, retorne `404` — nunca `500`
-- Status `204` não tem body — não retorne JSON no DELETE
-- Testes automatizados e Docker são diferenciais, não requisitos
-
-Boa sorte — vai ficar ótimo!
+Boa sorte — vai ficar ótimo! 💙
