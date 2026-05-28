@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # Serviço da aplicação
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://notif:notif123@db:5432/notif_db
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - PORT=3000
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - notif-network
+
+  # Banco de dados PostgreSQL
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=notif
+      - POSTGRES_PASSWORD=notif123
+      - POSTGRES_DB=notif_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notif"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - notif-network
+
+  # RabbitMQ para mensageria
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # Management UI
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - notif-network
+
+volumes:
+  postgres_data:
+  rabbitmq_data:
+
+networks:
+  notif-network:
+

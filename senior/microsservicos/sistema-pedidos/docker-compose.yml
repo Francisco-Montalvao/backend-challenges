@@ -1,0 +1,233 @@
+version: '3.8'
+
+services:
+  # ═══════════════════════════════════════════════════════════════
+  # API GATEWAY
+  # ═══════════════════════════════════════════════════════════════
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - ORDER_SERVICE_URL=http://order-service:3001
+      - PRODUCT_SERVICE_URL=http://product-service:3002
+      - USER_SERVICE_URL=http://user-service:3003
+      - PAYMENT_SERVICE_URL=http://payment-service:3004
+    depends_on:
+      - order-service
+      - product-service
+      - user-service
+      - payment-service
+    networks:
+      - microsservicos
+
+  # ═══════════════════════════════════════════════════════════════
+  # ORDER SERVICE
+  # ═══════════════════════════════════════════════════════════════
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=postgresql://order:order123@order-db:5432/order_db
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - PRODUCT_SERVICE_URL=http://product-service:3002
+      - LOG_LEVEL=debug
+    depends_on:
+      order-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ./order-service:/app
+      - /app/node_modules
+    networks:
+      - microsservicos
+
+  order-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=order
+      - POSTGRES_PASSWORD=order123
+      - POSTGRES_DB=order_db
+    volumes:
+      - order_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U order"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - microsservicos
+
+  # ═══════════════════════════════════════════════════════════════
+  # PRODUCT SERVICE
+  # ═══════════════════════════════════════════════════════════════
+  product-service:
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - DATABASE_URL=postgresql://product:product123@product-db:5432/product_db
+      - LOG_LEVEL=debug
+    depends_on:
+      product-db:
+        condition: service_healthy
+    volumes:
+      - ./product-service:/app
+      - /app/node_modules
+    networks:
+      - microsservicos
+
+  product-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=product
+      - POSTGRES_PASSWORD=product123
+      - POSTGRES_DB=product_db
+    volumes:
+      - product_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U product"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - microsservicos
+
+  # ═══════════════════════════════════════════════════════════════
+  # USER SERVICE
+  # ═══════════════════════════════════════════════════════════════
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=production
+      - PORT=3003
+      - DATABASE_URL=postgresql://user:user123@user-db:5432/user_db
+      - JWT_SECRET=seu_secret_super_secreto_aqui
+      - LOG_LEVEL=debug
+    depends_on:
+      user-db:
+        condition: service_healthy
+    volumes:
+      - ./user-service:/app
+      - /app/node_modules
+    networks:
+      - microsservicos
+
+  user-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=user123
+      - POSTGRES_DB=user_db
+    volumes:
+      - user_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - microsservicos
+
+  # ═══════════════════════════════════════════════════════════════
+  # PAYMENT SERVICE
+  # ═══════════════════════════════════════════════════════════════
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    ports:
+      - "3004:3004"
+    environment:
+      - NODE_ENV=production
+      - PORT=3004
+      - DATABASE_URL=postgresql://payment:payment123@payment-db:5432/payment_db
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - LOG_LEVEL=debug
+    depends_on:
+      payment-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ./payment-service:/app
+      - /app/node_modules
+    networks:
+      - microsservicos
+
+  payment-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=payment
+      - POSTGRES_PASSWORD=payment123
+      - POSTGRES_DB=payment_db
+    volumes:
+      - payment_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U payment"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - microsservicos
+
+  # ═══════════════════════════════════════════════════════════════
+  # MESSAGE BROKER (RabbitMQ)
+  # ═══════════════════════════════════════════════════════════════
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # Management UI
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - microsservicos
+
+  # ═══════════════════════════════════════════════════════════════
+  # OBSERVABILITY: Jaeger para distributed tracing (opcional)
+  # ═══════════════════════════════════════════════════════════════
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "16686:16686"   # Jaeger UI
+    networks:
+      - microsservicos
+
+volumes:
+  order_data:
+  product_data:
+  user_data:
+  payment_data:
+  rabbitmq_data:
+
+networks:
+  microsservicos:
+

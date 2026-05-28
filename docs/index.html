@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Challenges - Desafios de Programação</title>
+    <meta name="description" content="6 desafios de backend do Junior ao Sênior. Resolva em qualquer linguagem, aprenda na prática, mostre no portfólio.">
+    <meta name="keywords" content="backend, challenges, programação, desafios, learning, junior, pleno, senior">
+    <link rel="canonical" href="https://francisco-montalvao.github.io/backend-challenges/">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        nav a {
+            margin-left: 30px;
+            text-decoration: none;
+            color: #333;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #667eea;
+        }
+
+        .hero {
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: slideDown 0.8s ease;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            animation: slideUp 0.8s ease;
+        }
+
+        .cta {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .features {
+            background: white;
+            padding: 80px 0;
+            margin-top: 60px;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 4px solid #667eea;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .challenges {
+            background: #f8f9fa;
+            padding: 80px 0;
+        }
+
+        .challenges h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .challenge-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .challenge {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .level {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .level.junior {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .level.pleno {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .level.senior {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .challenge h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .challenge p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .challenge-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .challenge-links a {
+            font-size: 13px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid #667eea;
+            color: #667eea;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .challenge-links a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .stats {
+            background: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .stat-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .stat {
+            padding: 30px;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .cta-section {
+            background: #667eea;
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            background: white;
+            color: #667eea;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin: 0 10px;
+            transition: transform 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            nav a {
+                margin-left: 15px;
+                font-size: 14px;
+            }
+
+            .challenge-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">🚀 Backend Challenges</div>
+                <nav>
+                    <a href="#desafios">Desafios</a>
+                    <a href="#comunidade">Comunidade</a>
+                    <a href="https://github.com/Francisco-Montalvao/backend-challenges" target="_blank">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="hero">
+        <div class="container">
+            <h1>Desafios de Backend para Todos os Níveis</h1>
+            <p>Do Junior ao Sênior. Resolva em qualquer linguagem. Aprenda na prática.</p>
+            <a href="https://github.com/Francisco-Montalvao/backend-challenges" class="cta">Comece Agora →</a>
+        </div>
+    </div>
+
+    <section class="features">
+        <div class="container">
+            <h2>Por que participar?</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>📚 Aprenda Praticando</h3>
+                    <p>Desafios com contexto real de negócio. Sem gabarito. Você aprende resolvendo.</p>
+                </div>
+                <div class="card">
+                    <h3>🎯 Qualquer Linguagem</h3>
+                    <p>Resolva em Node.js, Python, Java, Go, Rust... O desafio é o mesmo, sua criatividade é infinita.</p>
+                </div>
+                <div class="card">
+                    <h3>💼 Portfolio Real</h3>
+                    <p>Mostre suas soluções no GitHub. Contribua com exemplos. Crie visibilidade.</p>
+                </div>
+                <div class="card">
+                    <h3>🚀 Roadmap Claro</h3>
+                    <p>Progressão do Junior ao Sênior. Saiba exatamente o que espera em cada nível.</p>
+                </div>
+                <div class="card">
+                    <h3>🐳 Docker Pronto</h3>
+                    <p>A maioria dos desafios tem docker-compose.yml. Banco de dados no ar em 1 comando.</p>
+                </div>
+                <div class="card">
+                    <h3>🤝 Comunidade Aberta</h3>
+                    <p>As primeiras soluções ainda não chegaram — a sua pode ser a primeira. Compartilhe e mostre para o mundo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="challenges" id="desafios">
+        <div class="container">
+            <h2>Desafios Disponíveis</h2>
+            <div class="challenge-list">
+                <div class="challenge">
+                    <span class="level junior">JUNIOR</span>
+                    <h3>📝 To-Do List API</h3>
+                    <p>Crie uma API REST completa com CRUD básico. Aprenda os fundamentos.</p>
+                    <div class="challenge-links">
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/crud/todo-list/README.md" target="_blank">Ver desafio</a>
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/crud/todo-list/dicas.md" target="_blank">Dicas</a>
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/crud/todo-list/SOLUTIONS.md" target="_blank">Soluções</a>
+                    </div>
+                </div>
+                <div class="challenge">
+                    <span class="level junior">JUNIOR</span>
+                    <h3>🔐 Login com JWT</h3>
+                    <p>Autenticação e autorização com JWT. Segurança na prática.</p>
+                    <div class="challenge-links">
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/autenticacao/login-jwt/README.md" target="_blank">Ver desafio</a>
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/autenticacao/login-jwt/dicas.md" target="_blank">Dicas</a>
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/autenticacao/login-jwt/SOLUTIONS.md" target="_blank">Soluções</a>
+                    </div>
+                </div>
+                <div class="challenge">
+                    <span class="level junior">JUNIOR</span>
+                    <h3>📦 Gerenciador de Produtos</h3>
+                    <p>CRUD avançado com validações, categorias e filtros complexos.</p>
+                    <div class="challenge-links">
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/crud/gerenciador-produtos/README.md" target="_blank">Ver desafio</a>
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/crud/gerenciador-produtos/dicas.md" target="_blank">Dicas</a>
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/crud/gerenciador-produtos/SOLUTIONS.md" target="_blank">Soluções</a>
+                    </div>
+                </div>
+                <div class="challenge">
+                    <span class="level junior">JUNIOR</span>
+                    <h3>📊 Relatório de Vendas</h3>
+                    <p>Agregações, filtros por data, rankings e consolidação de dados.</p>
+                    <div class="challenge-links">
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/relatorios/vendas/README.md" target="_blank">Ver desafio</a>
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/relatorios/vendas/dicas.md" target="_blank">Dicas</a>
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/relatorios/vendas/SOLUTIONS.md" target="_blank">Soluções</a>
+                    </div>
+                </div>
+                <div class="challenge">
+                    <span class="level pleno">PLENO</span>
+                    <h3>📨 Fila de Notificações</h3>
+                    <p>Mensageria assíncrona com RabbitMQ. Escalabilidade e resiliência.</p>
+                    <div class="challenge-links">
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/pleno/mensageria/fila-notificacoes/README.md" target="_blank">Ver desafio</a>
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/pleno/mensageria/fila-notificacoes/dicas.md" target="_blank">Dicas</a>
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/pleno/mensageria/fila-notificacoes/SOLUTIONS.md" target="_blank">Soluções</a>
+                    </div>
+                </div>
+                <div class="challenge">
+                    <span class="level senior">SENIOR</span>
+                    <h3>🏗️ Sistema de Pedidos</h3>
+                    <p>Arquitetura de microsserviços com 5 serviços, eventos e sagas distribuídas.</p>
+                    <div class="challenge-links">
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/senior/microsservicos/sistema-pedidos/README.md" target="_blank">Ver desafio</a>
+                        <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/senior/microsservicos/sistema-pedidos/SOLUTIONS.md" target="_blank">Soluções</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="container">
+            <h2>Números</h2>
+            <div class="stat-group">
+                <div class="stat">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Desafios Completos</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Níveis de Dificuldade</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Linguagens aceitas</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">👀</div>
+                    <div class="stat-label">Primeiras soluções aguardadas</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section" id="comunidade">
+        <div class="container">
+            <h2>Pronto para o desafio?</h2>
+            <p>Escolha um desafio, rode o docker-compose, e comece a resolver!</p>
+            <a href="https://github.com/Francisco-Montalvao/backend-challenges" class="cta-button">Ver no GitHub</a>
+            <a href="https://github.com/Francisco-Montalvao/backend-challenges/discussions" class="cta-button">Discussões</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Backend Challenges. Feito com ❤️ para a comunidade dev.</p>
+            <p><a href="https://github.com/Francisco-Montalvao/backend-challenges" style="color: #667eea;">GitHub</a> | <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/LICENSE" style="color: #667eea;">MIT License</a></p>
+        </div>
+    </footer>
+</body>
+</html>
+

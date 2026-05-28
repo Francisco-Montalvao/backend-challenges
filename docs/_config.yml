@@ -1,0 +1,16 @@
+theme: jekyll-theme-minimal
+title: Backend Challenges
+description: 6 desafios de backend do Junior ao Sênior. Sem gabarito, pronto para aprender.
+show_downloads: false
+github_button: false
+show_github: true
+
+# URLs
+url: "https://francisco-montalvao.github.io/backend-challenges"
+repository: "Francisco-Montalvao/backend-challenges"
+author: Francisco Montalvao
+
+# Social
+twitter_username: Francisco_Mvao
+github_username: Francisco-Montalvao
+
