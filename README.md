@@ -120,9 +120,6 @@ cd backend-challenges
 # Entre no desafio (recomendado para iniciantes)
 cd junior/crud/todo-list
 
-# Suba o banco de dados
-docker-compose up
-
 # Leia o enunciado e comece!
 cat README.md
 ```
@@ -145,8 +142,6 @@ Dúvidas? [GitHub Discussions →](https://github.com/Francisco-Montalvao/backen
 
 | Recurso | Descrição |
 |---------|-----------|
-| [🧪 Testing](./docs/TESTING.md) | Estratégias de teste por nível |
-| [🐳 Docker](./docs/DOCKER.md) | Setup e troubleshooting |
 | [🗺️ Estrutura](./docs/ORGANIZACAO.md) | Organização do projeto |
 | [🚀 Roadmap](./docs/ROADMAP.md) | Plano para 2026-2027 |
 | [🤝 Comunidade](./docs/COMMUNITY.md) | Como participar e contribuir |

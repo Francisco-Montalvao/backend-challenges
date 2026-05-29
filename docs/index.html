@@ -7,7 +7,29 @@
     <meta name="description" content="6 desafios de backend do Junior ao Sênior. Resolva em qualquer linguagem, aprenda na prática, mostre no portfólio.">
     <meta name="keywords" content="backend, challenges, programação, desafios, learning, junior, pleno, senior">
     <link rel="canonical" href="https://francisco-montalvao.github.io/backend-challenges/">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --bg-light: #f7fafc;
+            --white: #ffffff;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -15,26 +37,28 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-main);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
         }
 
         header {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             padding: 20px 0;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(10px);
         }
 
         .header-content {
@@ -45,287 +69,378 @@
 
         .logo {
             font-size: 24px;
-            font-weight: bold;
-            color: #667eea;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         nav a {
-            margin-left: 30px;
+            margin-left: 32px;
             text-decoration: none;
-            color: #333;
-            transition: color 0.3s;
+            color: var(--text-muted);
+            font-weight: 500;
+            transition: var(--transition);
         }
 
         nav a:hover {
-            color: #667eea;
+            color: var(--primary-color);
         }
 
         .hero {
-            color: white;
-            padding: 100px 0;
+            color: var(--white);
+            padding: 120px 0 100px;
             text-align: center;
         }
 
         .hero h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            animation: slideDown 0.8s ease;
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            letter-spacing: -1px;
         }
 
         .hero p {
-            font-size: 20px;
-            margin-bottom: 30px;
-            opacity: 0.9;
-            animation: slideUp 0.8s ease;
+            font-size: 22px;
+            font-weight: 400;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
         }
 
         .cta {
-            display: inline-block;
-            background: white;
-            color: #667eea;
-            padding: 15px 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--white);
+            color: var(--primary-color);
+            padding: 16px 48px;
             border-radius: 50px;
             text-decoration: none;
-            font-weight: bold;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
+            font-size: 18px;
+            font-weight: 700;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
         }
 
         .cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            color: var(--secondary-color);
         }
 
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .features {
-            background: white;
-            padding: 80px 0;
-            margin-top: 60px;
+        section.features {
+            background: var(--bg-light);
+            padding: 100px 0;
+            border-radius: 40px 40px 0 0;
         }
 
-        .features h2 {
+        .section-title {
             text-align: center;
-            font-size: 36px;
-            margin-bottom: 50px;
-            color: #333;
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 60px;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
         }
 
         .card {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 10px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border-left: 4px solid #667eea;
+            background: var(--white);
+            padding: 40px 32px;
+            border-radius: var(--radius-lg);
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
         }
 
         .card h3 {
-            color: #667eea;
-            margin-bottom: 15px;
-            font-size: 20px;
+            color: var(--text-main);
+            margin-bottom: 16px;
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .card p {
-            color: #666;
-            line-height: 1.8;
+            color: var(--text-muted);
+            line-height: 1.7;
+            font-size: 16px;
         }
 
         .challenges {
-            background: #f8f9fa;
-            padding: 80px 0;
-        }
-
-        .challenges h2 {
-            text-align: center;
-            font-size: 36px;
-            margin-bottom: 50px;
-            color: #333;
+            background: var(--white);
+            padding: 100px 0;
         }
 
         .challenge-list {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
         }
 
         .challenge {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: var(--bg-light);
+            padding: 32px;
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(0,0,0,0.03);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .challenge:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-md);
+            background: var(--white);
+            border-color: rgba(102, 126, 234, 0.2);
         }
 
         .level {
-            display: inline-block;
-            padding: 5px 12px;
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            align-self: flex-start;
         }
 
-        .level.junior {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .level.pleno {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .level.senior {
-            background: #f8d7da;
-            color: #721c24;
-        }
+        .level.junior { background: #e6fffa; color: #285e61; }
+        .level.pleno { background: #fffff0; color: #975a16; }
+        .level.senior { background: #fff5f5; color: #9b2c2c; }
 
         .challenge h3 {
-            color: #333;
-            margin-bottom: 10px;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            font-size: 22px;
+            font-weight: 700;
         }
 
         .challenge p {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 15px;
+            color: var(--text-muted);
+            font-size: 15px;
+            margin-bottom: 24px;
+            flex-grow: 1;
         }
 
         .challenge-links {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
+            margin-top: auto;
         }
 
         .challenge-links a {
-            font-size: 13px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            border: 1px solid #667eea;
-            color: #667eea;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: var(--white);
+            color: var(--primary-color);
             text-decoration: none;
-            transition: background 0.2s, color 0.2s;
+            transition: var(--transition);
+            border: 1px solid rgba(102, 126, 234, 0.2);
         }
 
         .challenge-links a:hover {
-            background: #667eea;
-            color: white;
+            background: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
         }
 
         .stats {
-            background: white;
-            padding: 60px 0;
-            text-align: center;
+            background: var(--bg-light);
+            padding: 80px 0;
+            border-top: 1px solid rgba(0,0,0,0.05);
         }
 
         .stat-group {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin: 40px 0;
+            gap: 32px;
+            text-align: center;
         }
 
         .stat {
-            padding: 30px;
+            padding: 24px;
         }
 
         .stat-number {
-            font-size: 48px;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 10px;
+            font-size: 56px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            line-height: 1;
         }
 
         .stat-label {
-            color: #666;
+            color: var(--text-muted);
             font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .cta-section {
-            background: #667eea;
-            color: white;
-            padding: 60px 0;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            padding: 100px 0;
             text-align: center;
         }
 
         .cta-section h2 {
-            font-size: 36px;
-            margin-bottom: 20px;
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            letter-spacing: -0.5px;
         }
 
         .cta-section p {
-            font-size: 18px;
-            margin-bottom: 30px;
+            font-size: 20px;
+            margin-bottom: 40px;
             opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .cta-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
         .cta-button {
-            background: white;
-            color: #667eea;
-            padding: 15px 40px;
+            background: var(--white);
+            color: var(--primary-color);
+            padding: 16px 40px;
             border-radius: 50px;
             text-decoration: none;
-            font-weight: bold;
-            display: inline-block;
-            margin: 0 10px;
-            transition: transform 0.3s;
+            font-weight: 700;
+            font-size: 16px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+        }
+
+        .cta-button.outline {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: none;
         }
 
         .cta-button:hover {
-            transform: scale(1.05);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .cta-button.outline:hover {
+            border-color: var(--white);
+            background: rgba(255,255,255,0.1);
         }
 
         footer {
-            background: #333;
-            color: white;
+            background: #1a202c;
+            color: #a0aec0;
             text-align: center;
-            padding: 30px 0;
-            margin-top: 60px;
+            padding: 40px 0;
+        }
+
+        footer p {
+            margin-bottom: 12px;
+        }
+
+        footer a {
+            color: #cbd5e0;
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+
+        footer a:hover {
+            color: var(--white);
         }
 
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 32px;
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
             }
 
             nav a {
-                margin-left: 15px;
-                font-size: 14px;
+                margin: 0 12px;
+                font-size: 15px;
             }
 
-            .challenge-list {
-                grid-template-columns: 1fr;
+            .hero {
+                padding: 80px 0 60px;
+            }
+
+            .hero h1 {
+                font-size: 40px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .section-title {
+                font-size: 32px;
             }
         }
     </style>
@@ -346,39 +461,39 @@
 
     <div class="hero">
         <div class="container">
-            <h1>Desafios de Backend para Todos os Níveis</h1>
-            <p>Do Junior ao Sênior. Resolva em qualquer linguagem. Aprenda na prática.</p>
+            <h1>Desafios de Backend<br>para Todos os Níveis</h1>
+            <p>Do Junior ao Sênior. Resolva em qualquer linguagem. Aprenda na prática e construa um portfólio de respeito.</p>
             <a href="https://github.com/Francisco-Montalvao/backend-challenges" class="cta">Comece Agora →</a>
         </div>
     </div>
 
     <section class="features">
         <div class="container">
-            <h2>Por que participar?</h2>
+            <h2 class="section-title">Por que participar?</h2>
             <div class="grid">
                 <div class="card">
                     <h3>📚 Aprenda Praticando</h3>
-                    <p>Desafios com contexto real de negócio. Sem gabarito. Você aprende resolvendo.</p>
+                    <p>Desafios com contexto real de negócio. Sem gabarito. Você aprende resolvendo e testando seus conhecimentos em cenários do dia a dia.</p>
                 </div>
                 <div class="card">
                     <h3>🎯 Qualquer Linguagem</h3>
-                    <p>Resolva em Node.js, Python, Java, Go, Rust... O desafio é o mesmo, sua criatividade é infinita.</p>
+                    <p>Resolva em Node.js, Python, Java, Go, Rust... O desafio é o mesmo, a arquitetura é você quem define, e sua criatividade é infinita.</p>
                 </div>
                 <div class="card">
                     <h3>💼 Portfolio Real</h3>
-                    <p>Mostre suas soluções no GitHub. Contribua com exemplos. Crie visibilidade.</p>
+                    <p>Mostre suas soluções no GitHub. Contribua com exemplos práticos, crie visibilidade para recrutadores e para a comunidade.</p>
                 </div>
                 <div class="card">
                     <h3>🚀 Roadmap Claro</h3>
-                    <p>Progressão do Junior ao Sênior. Saiba exatamente o que espera em cada nível.</p>
+                    <p>Progressão cuidadosa do Junior ao Sênior. Saiba exatamente o que te espera e o que estudar em cada nível de senioridade.</p>
                 </div>
                 <div class="card">
                     <h3>🐳 Docker Pronto</h3>
-                    <p>A maioria dos desafios tem docker-compose.yml. Banco de dados no ar em 1 comando.</p>
+                    <p>A maioria dos desafios acompanha um arquivo <code>docker-compose.yml</code>. Suba bancos de dados e ferramentas em 1 comando.</p>
                 </div>
                 <div class="card">
                     <h3>🤝 Comunidade Aberta</h3>
-                    <p>As primeiras soluções ainda não chegaram — a sua pode ser a primeira. Compartilhe e mostre para o mundo.</p>
+                    <p>As primeiras soluções ainda não chegaram — a sua pode ser a pioneira. Compartilhe seu código, receba feedback e evolua.</p>
                 </div>
             </div>
         </div>
@@ -386,12 +501,12 @@
 
     <section class="challenges" id="desafios">
         <div class="container">
-            <h2>Desafios Disponíveis</h2>
+            <h2 class="section-title">Desafios Disponíveis</h2>
             <div class="challenge-list">
                 <div class="challenge">
-                    <span class="level junior">JUNIOR</span>
+                    <span class="level junior">JÚNIOR</span>
                     <h3>📝 To-Do List API</h3>
-                    <p>Crie uma API REST completa com CRUD básico. Aprenda os fundamentos.</p>
+                    <p>Crie uma API REST completa com CRUD básico. Ideal para quem está começando e quer aprender os fundamentos.</p>
                     <div class="challenge-links">
                         <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/crud/todo-list/README.md" target="_blank">Ver desafio</a>
                         <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/crud/todo-list/dicas.md" target="_blank">Dicas</a>
@@ -399,9 +514,9 @@
                     </div>
                 </div>
                 <div class="challenge">
-                    <span class="level junior">JUNIOR</span>
+                    <span class="level junior">JÚNIOR</span>
                     <h3>🔐 Login com JWT</h3>
-                    <p>Autenticação e autorização com JWT. Segurança na prática.</p>
+                    <p>Entenda autenticação e autorização com JWT na prática. Aprenda a proteger rotas e gerenciar sessões.</p>
                     <div class="challenge-links">
                         <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/autenticacao/login-jwt/README.md" target="_blank">Ver desafio</a>
                         <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/autenticacao/login-jwt/dicas.md" target="_blank">Dicas</a>
@@ -409,9 +524,9 @@
                     </div>
                 </div>
                 <div class="challenge">
-                    <span class="level junior">JUNIOR</span>
+                    <span class="level junior">JÚNIOR</span>
                     <h3>📦 Gerenciador de Produtos</h3>
-                    <p>CRUD avançado com validações, categorias e filtros complexos.</p>
+                    <p>Suba o nível do seu CRUD com validações complexas, categorias e filtros de busca avançados.</p>
                     <div class="challenge-links">
                         <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/crud/gerenciador-produtos/README.md" target="_blank">Ver desafio</a>
                         <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/crud/gerenciador-produtos/dicas.md" target="_blank">Dicas</a>
@@ -419,9 +534,9 @@
                     </div>
                 </div>
                 <div class="challenge">
-                    <span class="level junior">JUNIOR</span>
+                    <span class="level junior">JÚNIOR</span>
                     <h3>📊 Relatório de Vendas</h3>
-                    <p>Agregações, filtros por data, rankings e consolidação de dados.</p>
+                    <p>Domine o banco de dados lidando com agregações, filtros por data, rankings e consolidação de informações.</p>
                     <div class="challenge-links">
                         <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/relatorios/vendas/README.md" target="_blank">Ver desafio</a>
                         <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/junior/relatorios/vendas/dicas.md" target="_blank">Dicas</a>
@@ -431,7 +546,7 @@
                 <div class="challenge">
                     <span class="level pleno">PLENO</span>
                     <h3>📨 Fila de Notificações</h3>
-                    <p>Mensageria assíncrona com RabbitMQ. Escalabilidade e resiliência.</p>
+                    <p>Dê os primeiros passos em mensageria assíncrona (ex: RabbitMQ). Pense em escalabilidade e resiliência de serviços.</p>
                     <div class="challenge-links">
                         <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/pleno/mensageria/fila-notificacoes/README.md" target="_blank">Ver desafio</a>
                         <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/pleno/mensageria/fila-notificacoes/dicas.md" target="_blank">Dicas</a>
@@ -439,9 +554,9 @@
                     </div>
                 </div>
                 <div class="challenge">
-                    <span class="level senior">SENIOR</span>
+                    <span class="level senior">SÊNIOR</span>
                     <h3>🏗️ Sistema de Pedidos</h3>
-                    <p>Arquitetura de microsserviços com 5 serviços, eventos e sagas distribuídas.</p>
+                    <p>O desafio final. Arquitetura de microsserviços com 5 serviços distintos, orientação a eventos e sagas distribuídas.</p>
                     <div class="challenge-links">
                         <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/senior/microsservicos/sistema-pedidos/README.md" target="_blank">Ver desafio</a>
                         <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/senior/microsservicos/sistema-pedidos/SOLUTIONS.md" target="_blank">Soluções</a>
@@ -453,23 +568,23 @@
 
     <section class="stats">
         <div class="container">
-            <h2>Números</h2>
+            <h2 class="section-title">Em Números</h2>
             <div class="stat-group">
                 <div class="stat">
                     <div class="stat-number">6</div>
-                    <div class="stat-label">Desafios Completos</div>
+                    <div class="stat-label">Desafios Prontos</div>
                 </div>
                 <div class="stat">
                     <div class="stat-number">3</div>
-                    <div class="stat-label">Níveis de Dificuldade</div>
+                    <div class="stat-label">Níveis (Jr, Pl, Sr)</div>
                 </div>
                 <div class="stat">
                     <div class="stat-number">∞</div>
-                    <div class="stat-label">Linguagens aceitas</div>
+                    <div class="stat-label">Linguagens</div>
                 </div>
                 <div class="stat">
                     <div class="stat-number">👀</div>
-                    <div class="stat-label">Primeiras soluções aguardadas</div>
+                    <div class="stat-label">Aguardando sua PR</div>
                 </div>
             </div>
         </div>
@@ -478,18 +593,27 @@
     <section class="cta-section" id="comunidade">
         <div class="container">
             <h2>Pronto para o desafio?</h2>
-            <p>Escolha um desafio, rode o docker-compose, e comece a resolver!</p>
-            <a href="https://github.com/Francisco-Montalvao/backend-challenges" class="cta-button">Ver no GitHub</a>
-            <a href="https://github.com/Francisco-Montalvao/backend-challenges/discussions" class="cta-button">Discussões</a>
+            <p>Escolha o seu nível, clone o repositório e mão no código!</p>
+            <div class="cta-actions">
+                <a href="https://github.com/Francisco-Montalvao/backend-challenges" class="cta-button">Ir para o GitHub</a>
+                <a href="https://github.com/Francisco-Montalvao/backend-challenges/discussions" class="cta-button outline">Abrir Discussão</a>
+            </div>
         </div>
     </section>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 Backend Challenges. Feito com ❤️ para a comunidade dev.</p>
-            <p><a href="https://github.com/Francisco-Montalvao/backend-challenges" style="color: #667eea;">GitHub</a> | <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/LICENSE" style="color: #667eea;">MIT License</a></p>
+            <p>&copy; <span id="current-year"></span> Backend Challenges. Feito com ❤️ para a comunidade dev brasileira.</p>
+            <p>
+                <a href="https://github.com/Francisco-Montalvao/backend-challenges">GitHub</a> &nbsp;|&nbsp;
+                <a href="https://github.com/Francisco-Montalvao/backend-challenges/blob/main/LICENSE">MIT License</a>
+            </p>
         </div>
     </footer>
+
+    <script>
+        // Update year automatically
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>
-
