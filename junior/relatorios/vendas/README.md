@@ -401,18 +401,17 @@ repository  →  executa as queries no banco
 
 ## 🌱 Script de seed
 
-Popule o banco em duas etapas — primeiro os vendedores, depois as vendas (que dependem dos IDs já existentes):
+Um arquivo `import.sql` está disponível na raiz do repositório. Ele cria as tabelas e popula o banco com 7 vendedores e vendas distribuídas em 3 meses (janeiro, fevereiro e março de 2026).
 
-**1. Cadastre os vendedores:**
-- Mínimo de 5 vendedores com nome, e-mail e telefone realistas
+Para executar:
 
-**2. Cadastre as vendas:**
-- Mínimo de 200 vendas distribuídas em pelo menos 3 meses diferentes
-- Cada venda deve referenciar um `vendedor_id` existente
-- Os valores de `valor_total` devem variar (não use o mesmo valor para todas)
-- Distribua as vendas de forma irregular — alguns dias com mais, outros com menos
+```bash
+psql -U seu_usuario -d seu_banco -f import.sql
+```
 
-> Isso é importante para que os filtros de data façam diferença nos resultados.
+O arquivo respeita a ordem correta — vendedores são inseridos antes das vendas, que dependem dos IDs já existentes.
+
+> Os dados são distribuídos de forma irregular entre os dias e vendedores, para que os filtros de data façam diferença nos resultados.
 
 ---
 
