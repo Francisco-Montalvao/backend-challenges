@@ -20,21 +20,21 @@ Monte o banco com estas tabelas e popule com dados de teste (seed):
 
 **vendedores**
 
-| Campo | Tipo | Descrição |
+| Campo | Tipo | Validação |
 |---|---|---|
-| `id` | inteiro | PK |
-| `nome` | texto | Nome do vendedor |
-| `email` | texto | E-mail do vendedor |
-| `telefone` | texto | Telefone do vendedor |
+| `id` | inteiro | PK, gerado automaticamente |
+| `nome` | texto | Obrigatório, mínimo 2 caracteres |
+| `email` | texto | Obrigatório, formato válido, único no banco |
+| `telefone` | texto | Obrigatório, mínimo 8 caracteres |
 
 **vendas**
 
-| Campo | Tipo | Descrição |
+| Campo | Tipo | Validação |
 |---|---|---|
-| `id` | inteiro | PK |
-| `vendedor_id` | inteiro | FK para vendedores |
-| `valor_total` | decimal | Valor da venda |
-| `data` | data | Data da venda (YYYY-MM-DD) |
+| `id` | inteiro | PK, gerado automaticamente |
+| `vendedor_id` | inteiro | Obrigatório, deve existir na tabela `vendedores` |
+| `valor_total` | decimal | Obrigatório, maior que zero |
+| `data` | data | Obrigatório, formato YYYY-MM-DD, não pode ser data futura |
 
 > Você define a estrutura exata — o que importa é conseguir responder as queries dos endpoints.
 
@@ -77,26 +77,6 @@ Os endpoints de relatório aceitam os query params `data_inicio` e `data_fim` (f
 | ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat-square) | `/relatorios/vendas/total` | Total vendido e quantidade no período | 200 | 400 |
 | ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat-square) | `/relatorios/vendas/por-vendedor` | Ranking de vendedores no período | 200 | 400 |
 | ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat-square) | `/relatorios/vendas/diario` | Total agrupado por dia no período | 200 | 400 |
-
----
-
-## ✅ Validações
-
-### Vendedores
-
-| Campo | Regra |
-|---|---|
-| `nome` | Obrigatório, mínimo 2 caracteres |
-| `email` | Obrigatório, formato válido, único no banco |
-| `telefone` | Obrigatório, mínimo 8 caracteres |
-
-### Vendas
-
-| Campo | Regra |
-|---|---|
-| `vendedor_id` | Obrigatório, deve existir na tabela `vendedores` |
-| `valor_total` | Obrigatório, maior que zero |
-| `data` | Obrigatório, formato YYYY-MM-DD, não pode ser data futura |
 
 ---
 
