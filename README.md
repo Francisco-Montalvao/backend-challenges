@@ -1,19 +1,6 @@
 <div align="center">
 
-```
-██████╗  █████╗  ██████╗██╗  ██╗███████╗███╗   ██╗██████╗ 
-██╔══██╗██╔══██╗██╔════╝██║ ██╔╝██╔════╝████╗  ██║██╔══██╗
-██████╔╝███████║██║     █████╔╝ █████╗  ██╔██╗ ██║██║  ██║
-██╔══██╗██╔══██║██║     ██╔═██╗ ██╔══╝  ██║╚██╗██║██║  ██║
-██████╔╝██║  ██║╚██████╗██║  ██╗███████╗██║ ╚████║██████╔╝
-╚═════╝ ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝╚═════╝ 
-       ██████╗██╗  ██╗ █████╗ ██╗     ██╗     ███████╗
-      ██╔════╝██║  ██║██╔══██╗██║     ██║     ██╔════╝
-      ██║     ███████║███████║██║     ██║     █████╗  
-      ██║     ██╔══██║██╔══██║██║     ██║     ██╔══╝  
-      ╚██████╗██║  ██║██║  ██║███████╗███████╗███████╗
-       ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
-```
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:4ade80,50:60a5fa,100:f472b6&height=200&section=header&text=Backend%20Challenges&fontSize=52&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Desafios%20práticos%20do%20Júnior%20ao%20Sênior&descAlignY=58&descSize=18&descColor=ffffff"/>
 
 **Desafios práticos de backend para todos os níveis.**  
 Resolva em qualquer linguagem. Aprenda. Mostre no portfólio.
@@ -48,7 +35,7 @@ To share a solution, fork the repo, add your entry to the challenge's `SOLUTIONS
 
 Processos seletivos pedem desafios técnicos. Devs querem praticar. Mas repositórios com desafios de backend bem estruturados — com contexto real, critérios claros e dicas de estudo — são raros.
 
-Esse repositório resolve isso. Cada desafio simula um problema real de mercado, tem critérios de avaliação transparentes e acompanha recursos para você aprender enquanto resolve.
+Esse repositório resolve isso. Cada desafio simula um problema real de mercado e acompanha recursos para você aprender enquanto resolve.
 
 **Você resolve na linguagem que quiser.** Java, Python, Go, Node.js, C#, Rust — sem restrições.
 
@@ -60,7 +47,7 @@ Todo desafio tem três partes — cada uma com um propósito claro:
 
 | Arquivo | O que tem dentro |
 |---------|-----------------|
-| `README.md` | O enunciado completo: modelo de dados, endpoints, exemplos e critérios de avaliação |
+| `README.md` | O enunciado completo: modelo de dados, endpoints e exemplos |
 | `dicas.md` | Onde trava 90% das pessoas. Leia quando ficar preso — sem spoilers da solução |
 | `SOLUTIONS.md` | O que a comunidade já resolveu. Compare abordagens, inspire-se |
 
@@ -117,7 +104,7 @@ Todo desafio tem três partes — cada uma com um propósito claro:
 git clone https://github.com/Francisco-Montalvao/backend-challenges.git
 cd backend-challenges
 
-# Entre no desafio (recomendado para iniciantes)
+# Entre no desafio recomendado para iniciantes
 cd junior/crud/todo-list
 
 # Leia o enunciado e comece!
@@ -155,6 +142,8 @@ MIT — use, adapte, compartilhe. Só não esquece de deixar a ⭐ se te ajudou!
 ---
 
 <div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:f472b6,50:60a5fa,100:4ade80&height=100&section=footer"/>
 
 **Feito com 💙 para a comunidade dev brasileira**
 
