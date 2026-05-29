@@ -4,8 +4,8 @@ Soluções enviadas pela comunidade. Inspire-se ou compare abordagens!
 
 | Desenvolvedor | Linguagem | Repositório |
 |---|---|---|
+| [Francisco Montalvao](https://github.com/Francisco-Montalvao) | ![Java](https://img.shields.io/badge/Java-ED8B00?style=flat&logo=openjdk&logoColor=white) | [todo-list-java](https://github.com/Francisco-Montalvao/backend-challenges-desafio-todo-list) |
 
-| [Francisco Montalvao](https://github.com/Francisco-Montalvao) | Java | [todo-list-java](https://github.com/Francisco-Montalvao/backend-challenges-desafio-todo-list) |
 ## Como adicionar a sua
 
 1. Faça um **fork** deste repositório
@@ -14,6 +14,6 @@ Soluções enviadas pela comunidade. Inspire-se ou compare abordagens!
 
 Exemplo:
 
-```
-| [Maria Silva](https://github.com/mariasilva) | Python | [todo-list-python](https://github.com/mariasilva/todo-list-python) |
+```markdown
+| [Maria Silva](https://github.com/mariasilva) | ![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white) | [todo-list-python](https://github.com/mariasilva/todo-list-python) |
 ```

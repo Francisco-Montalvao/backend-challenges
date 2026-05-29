@@ -4,7 +4,7 @@ Soluções enviadas pela comunidade. Inspire-se ou compare abordagens!
 
 | Desenvolvedor | Linguagem | Repositório |
 |---|---|---|
-| [Francisco Montalvao](https://github.com/francisco-montalvao) | Java | [backend-challenges-desafio-gerenciador-de-produtos](https://github.com/francisco-montalvao/backend-challenges-desafio-gerenciador-de-produtos) |
+| [Francisco Montalvao](https://github.com/francisco-montalvao) | ![Java](https://img.shields.io/badge/Java-ED8B00?style=flat&logo=openjdk&logoColor=white) | [backend-challenges-desafio-gerenciador-de-produtos](https://github.com/francisco-montalvao/backend-challenges-desafio-gerenciador-de-produtos) |
 
 ## Como adicionar a sua
 
@@ -14,6 +14,6 @@ Soluções enviadas pela comunidade. Inspire-se ou compare abordagens!
 
 Exemplo:
 
-```
-| [Maria Silva](https://github.com/mariasilva) | Python | [gerenciador-produtos-java](https://github.com/mariasilva/gerenciador-produtos-java) |
+```markdown
+| [Maria Silva](https://github.com/mariasilva) | ![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white) | [gerenciador-produtos-python](https://github.com/mariasilva/gerenciador-produtos-python) |
 ```
