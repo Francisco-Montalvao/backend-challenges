@@ -4,7 +4,7 @@ Soluções enviadas pela comunidade. Inspire-se ou compare abordagens!
 
 | Desenvolvedor | Linguagem | Repositório |
 |---|---|---|
-| [Francisco Montalvao](https://github.com/francisco-montalvao) | ![Java](https://img.shields.io/badge/Java-000?style=for-the-badge&logo=java) | [backend-challenges-desafio-gerenciador-de-produtos](https://github.com/francisco-montalvao/backend-challenges-desafio-gerenciador-de-produtos) |
+| [Francisco Montalvao](https://github.com/francisco-montalvao) | ![Java](https://img.shields.io/badge/Java-000?style=for-the-badge&logo=java) ![Spring](![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white))   | [backend-challenges-desafio-gerenciador-de-produtos](https://github.com/francisco-montalvao/backend-challenges-desafio-gerenciador-de-produtos) |
 
 ## Como adicionar a sua
 
