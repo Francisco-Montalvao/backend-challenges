@@ -12,6 +12,57 @@ Uma loja online precisa de uma API para gerenciar seus pedidos. O sistema deve p
 
 ---
 
+## 🧭 Convenções
+
+Antes de mergulhar nos endpoints, alinhe estes pontos — eles valem para **toda** a API.
+
+### Status HTTP
+
+| Código | Significado | Quando usar |
+|---|---|---|
+| `200 OK` | Sucesso com corpo | GET, PUT e PATCH bem-sucedidos |
+| `201 Created` | Recurso criado | POST que cria um recurso |
+| `204 No Content` | Sucesso sem corpo | DELETE, inativação e cancelamento |
+| `400 Bad Request` | Validação ou regra de negócio violada | Campos inválidos, transição inválida, estoque, etc. |
+| `404 Not Found` | Recurso não encontrado | ID inexistente |
+| `409 Conflict` | Conflito de unicidade | E-mail ou nome já cadastrado |
+
+### Formato de erro padrão
+
+Erros de regra de negócio ou recurso não encontrado seguem este formato:
+
+```json
+{
+  "timestamp": "2026-06-01T10:00:00",
+  "status": 400,
+  "mensagem": "Descrição clara e legível do erro."
+}
+```
+
+### Formato de erro de validação de campos
+
+Quando um ou mais campos do corpo são inválidos, retorne `400` com a lista de erros:
+
+```json
+{
+  "timestamp": "2026-06-01T10:00:00",
+  "status": 400,
+  "mensagem": "Erro de validação em campos",
+  "erros": [
+    { "campo": "nome", "mensagem": "O nome deve ter no mínimo 2 caracteres." },
+    { "campo": "email", "mensagem": "O e-mail informado é inválido." }
+  ]
+}
+```
+
+### Outros padrões
+
+- **Nomenclatura:** todos os campos JSON usam `snake_case` (ex.: `valor_total`, `criado_em`, `preco_unitario`).
+- **Datas e horários:** formato ISO-8601 (`YYYY-MM-DDTHH:mm:ss`); datas puras em `YYYY-MM-DD`.
+- **Valores monetários:** decimal com 2 casas (ex.: `89.90`).
+
+---
+
 ## 🗂️ Modelo de Dados
 
 Antes de escrever qualquer código, modele as relações entre as entidades. Entender os relacionamentos é fundamental para construir as queries de relatório corretamente.
@@ -70,6 +121,31 @@ Antes de escrever qualquer código, modele as relações entre as entidades. Ent
 
 > **`valor_total` do pedido:** Deve ser calculado automaticamente como a soma de `quantidade × preco_unitario` de todos os itens. Sempre que os itens mudarem, o `valor_total` deve ser recalculado.
 
+### 🔗 Relacionamentos
+
+Um resumo das cardinalidades para guiar suas entidades JPA e os `JOIN`s dos relatórios:
+
+| Relação | Cardinalidade | Lado dono da FK |
+|---|---|---|
+| Cliente → Pedidos | 1 : N | `pedidos.cliente_id` |
+| Categoria → Produtos | 1 : N | `produtos.categoria_id` |
+| Pedido → Itens | 1 : N | `itens_pedido.pedido_id` |
+| Produto → Itens de pedido | 1 : N | `itens_pedido.produto_id` |
+
+```
+                ┌────────────┐
+                │  categorias│
+                └─────┬──────┘
+                      │ 1:N
+                ┌─────▼──────┐        ┌────────────┐
+                │  produtos  │◄───────┤itens_pedido│
+                └────────────┘  N:1   └─────┬──────┘
+                                            │ N:1
+┌────────────┐        ┌────────────┐        │
+│  clientes  │───────►│   pedidos  │◄───────┘
+└────────────┘  1:N   └────────────┘  1:N
+```
+
 ---
 
 ## 🔄 Status do Pedido
@@ -93,7 +169,11 @@ PENDENTE ──→ CONFIRMADO ──→ EM_PREPARO ──→ ENVIADO ──→ E
 
 ## 🔌 Endpoints
 
-### Clientes
+Cada grupo abaixo traz a tabela de rotas seguida dos **modelos de requisição e resposta**. Os dados dos exemplos são fictícios e ilustram apenas o **formato** esperado.
+
+---
+
+### 👤 Clientes
 
 | Método | Rota | Descrição | Sucesso | Erro |
 |---|---|---|---|---|
@@ -105,7 +185,145 @@ PENDENTE ──→ CONFIRMADO ──→ EM_PREPARO ──→ ENVIADO ──→ E
 
 > Não é permitido remover um cliente que possui pedidos. Retorne `400` com mensagem explicativa.
 
-### Categorias
+#### `POST /clientes`
+
+**Requisição**
+```json
+{
+  "nome": "Ana Lima",
+  "email": "ana.lima@email.com",
+  "telefone": "(11) 98765-4321"
+}
+```
+
+**Resposta `201`**
+```json
+{
+  "id": 1,
+  "nome": "Ana Lima",
+  "email": "ana.lima@email.com",
+  "telefone": "(11) 98765-4321",
+  "criado_em": "2026-06-01T09:30:00"
+}
+```
+
+**Erro `409` — e-mail já cadastrado**
+```json
+{
+  "timestamp": "2026-06-01T09:30:00",
+  "status": 409,
+  "mensagem": "Já existe um cliente cadastrado com o e-mail 'ana.lima@email.com'."
+}
+```
+
+**Erro `400` — validação**
+```json
+{
+  "timestamp": "2026-06-01T09:30:00",
+  "status": 400,
+  "mensagem": "Erro de validação em campos",
+  "erros": [
+    { "campo": "nome", "mensagem": "O nome deve ter no mínimo 2 caracteres." },
+    { "campo": "telefone", "mensagem": "O telefone é obrigatório." }
+  ]
+}
+```
+
+#### `GET /clientes`
+
+**Resposta `200`**
+```json
+[
+  {
+    "id": 1,
+    "nome": "Ana Lima",
+    "email": "ana.lima@email.com",
+    "telefone": "(11) 98765-4321",
+    "criado_em": "2026-06-01T09:30:00"
+  },
+  {
+    "id": 2,
+    "nome": "Carlos Souza",
+    "email": "carlos.souza@email.com",
+    "telefone": "(21) 99876-5432",
+    "criado_em": "2026-06-01T09:45:00"
+  }
+]
+```
+
+> Lista vazia retorna `200` com `[]`.
+
+#### `GET /clientes/{id}`
+
+**Resposta `200`**
+```json
+{
+  "id": 1,
+  "nome": "Ana Lima",
+  "email": "ana.lima@email.com",
+  "telefone": "(11) 98765-4321",
+  "criado_em": "2026-06-01T09:30:00"
+}
+```
+
+**Erro `404`**
+```json
+{
+  "timestamp": "2026-06-01T09:30:00",
+  "status": 404,
+  "mensagem": "Cliente com id 99 não encontrado."
+}
+```
+
+#### `PUT /clientes/{id}`
+
+**Requisição**
+```json
+{
+  "nome": "Ana Lima Pereira",
+  "email": "ana.pereira@email.com",
+  "telefone": "(11) 98765-0000"
+}
+```
+
+**Resposta `200`**
+```json
+{
+  "id": 1,
+  "nome": "Ana Lima Pereira",
+  "email": "ana.pereira@email.com",
+  "telefone": "(11) 98765-0000",
+  "criado_em": "2026-06-01T09:30:00"
+}
+```
+
+> Erros possíveis: `404` (cliente não existe) e `400` (validação / e-mail duplicado).
+
+#### `DELETE /clientes/{id}`
+
+**Resposta `204`** — sem corpo.
+
+**Erro `400` — cliente possui pedidos**
+```json
+{
+  "timestamp": "2026-06-01T09:30:00",
+  "status": 400,
+  "mensagem": "Não é possível remover o cliente 'Ana Lima' pois ele possui 3 pedido(s) registrado(s)."
+}
+```
+
+**Erro `404`**
+```json
+{
+  "timestamp": "2026-06-01T09:30:00",
+  "status": 404,
+  "mensagem": "Cliente com id 99 não encontrado."
+}
+```
+
+---
+
+### 🏷️ Categorias
 
 | Método | Rota | Descrição | Sucesso | Erro |
 |---|---|---|---|---|
@@ -115,7 +333,65 @@ PENDENTE ──→ CONFIRMADO ──→ EM_PREPARO ──→ ENVIADO ──→ E
 
 > Não é permitido remover uma categoria que possui produtos vinculados.
 
-### Produtos
+#### `POST /categorias`
+
+**Requisição**
+```json
+{ "nome": "Roupas" }
+```
+
+**Resposta `201`**
+```json
+{ "id": 1, "nome": "Roupas" }
+```
+
+**Erro `409` — nome já existe**
+```json
+{
+  "timestamp": "2026-06-01T09:30:00",
+  "status": 409,
+  "mensagem": "Já existe uma categoria com o nome 'Roupas'."
+}
+```
+
+#### `GET /categorias`
+
+**Resposta `200`**
+```json
+[
+  { "id": 1, "nome": "Roupas" },
+  { "id": 2, "nome": "Acessórios" },
+  { "id": 3, "nome": "Calçados" },
+  { "id": 4, "nome": "Eletrônicos" },
+  { "id": 5, "nome": "Casa" }
+]
+```
+
+#### `DELETE /categorias/{id}`
+
+**Resposta `204`** — sem corpo.
+
+**Erro `400` — categoria com produtos vinculados**
+```json
+{
+  "timestamp": "2026-06-01T09:30:00",
+  "status": 400,
+  "mensagem": "Não é possível remover a categoria 'Roupas' pois existem 8 produto(s) vinculado(s)."
+}
+```
+
+**Erro `404`**
+```json
+{
+  "timestamp": "2026-06-01T09:30:00",
+  "status": 404,
+  "mensagem": "Categoria com id 99 não encontrada."
+}
+```
+
+---
+
+### 📦 Produtos
 
 | Método | Rota | Descrição | Sucesso | Erro |
 |---|---|---|---|---|
@@ -127,7 +403,150 @@ PENDENTE ──→ CONFIRMADO ──→ EM_PREPARO ──→ ENVIADO ──→ E
 
 > O `DELETE` não remove o produto do banco — apenas marca como `ativo = false`. Produtos inativos não aparecem na listagem e não podem ser adicionados a novos pedidos.
 
-### Pedidos
+#### `POST /produtos`
+
+**Requisição**
+```json
+{
+  "nome": "Camiseta Azul",
+  "descricao": "Camiseta 100% algodão, gola redonda",
+  "preco": 89.90,
+  "estoque": 50,
+  "categoria_id": 1
+}
+```
+
+**Resposta `201`**
+```json
+{
+  "id": 3,
+  "nome": "Camiseta Azul",
+  "descricao": "Camiseta 100% algodão, gola redonda",
+  "preco": 89.90,
+  "estoque": 50,
+  "categoria": { "id": 1, "nome": "Roupas" },
+  "ativo": true
+}
+```
+
+**Erro `400` — categoria inexistente**
+```json
+{
+  "timestamp": "2026-06-01T09:30:00",
+  "status": 400,
+  "mensagem": "A categoria informada (id: 99) não existe."
+}
+```
+
+**Erro `400` — validação**
+```json
+{
+  "timestamp": "2026-06-01T09:30:00",
+  "status": 400,
+  "mensagem": "Erro de validação em campos",
+  "erros": [
+    { "campo": "preco", "mensagem": "O preço deve ser maior que zero." },
+    { "campo": "estoque", "mensagem": "O estoque não pode ser negativo." }
+  ]
+}
+```
+
+#### `GET /produtos`
+
+**Resposta `200`**
+```json
+[
+  {
+    "id": 3,
+    "nome": "Camiseta Azul",
+    "descricao": "Camiseta 100% algodão, gola redonda",
+    "preco": 89.90,
+    "estoque": 50,
+    "categoria": { "id": 1, "nome": "Roupas" },
+    "ativo": true
+  },
+  {
+    "id": 7,
+    "nome": "Boné Preto",
+    "descricao": null,
+    "preco": 119.90,
+    "estoque": 30,
+    "categoria": { "id": 2, "nome": "Acessórios" },
+    "ativo": true
+  }
+]
+```
+
+> Produtos com `ativo = false` **não aparecem** nesta listagem.
+
+#### `GET /produtos/{id}`
+
+**Resposta `200`**
+```json
+{
+  "id": 3,
+  "nome": "Camiseta Azul",
+  "descricao": "Camiseta 100% algodão, gola redonda",
+  "preco": 89.90,
+  "estoque": 50,
+  "categoria": { "id": 1, "nome": "Roupas" },
+  "ativo": true
+}
+```
+
+**Erro `404`**
+```json
+{
+  "timestamp": "2026-06-01T09:30:00",
+  "status": 404,
+  "mensagem": "Produto com id 99 não encontrado."
+}
+```
+
+#### `PUT /produtos/{id}`
+
+**Requisição**
+```json
+{
+  "nome": "Camiseta Azul Marinho",
+  "descricao": "Camiseta 100% algodão, gola redonda",
+  "preco": 94.90,
+  "estoque": 45,
+  "categoria_id": 1
+}
+```
+
+**Resposta `200`**
+```json
+{
+  "id": 3,
+  "nome": "Camiseta Azul Marinho",
+  "descricao": "Camiseta 100% algodão, gola redonda",
+  "preco": 94.90,
+  "estoque": 45,
+  "categoria": { "id": 1, "nome": "Roupas" },
+  "ativo": true
+}
+```
+
+> ⚠️ Alterar o `preco` **não muda** o `preco_unitario` de pedidos já criados — eles guardam o valor congelado no momento da compra.
+
+#### `DELETE /produtos/{id}`
+
+**Resposta `204`** — sem corpo. O produto **não é removido**; apenas recebe `ativo = false`.
+
+**Erro `404`**
+```json
+{
+  "timestamp": "2026-06-01T09:30:00",
+  "status": 404,
+  "mensagem": "Produto com id 99 não encontrado."
+}
+```
+
+---
+
+### 🛒 Pedidos
 
 | Método | Rota | Descrição | Sucesso | Erro |
 |---|---|---|---|---|
@@ -149,24 +568,11 @@ PENDENTE ──→ CONFIRMADO ──→ EM_PREPARO ──→ ENVIADO ──→ E
 
 > Lista vazia não é erro — retorne `200` com `[]`.
 
-### Relatórios
+> 💡 A criação do pedido deve ser **atômica**: validar cliente, validar cada item (existência, ativo e estoque), copiar o `preco_unitario`, dar baixa no estoque e calcular o `valor_total` devem acontecer na mesma transação. Se qualquer item falhar, nada é persistido.
 
-Os endpoints de relatório aceitam os query params `data_inicio` e `data_fim` (formato `YYYY-MM-DD`). **Ambos são obrigatórios.**
+#### `POST /pedidos`
 
-| Método | Rota | Descrição | Sucesso |
-|---|---|---|---|
-| `GET` | `/relatorios/pedidos/resumo` | Total de pedidos e receita por status no período | `200` |
-| `GET` | `/relatorios/pedidos/por-dia` | Receita e quantidade de pedidos por dia | `200` |
-| `GET` | `/relatorios/produtos/mais-vendidos` | Ranking de produtos por quantidade e receita | `200` |
-| `GET` | `/relatorios/categorias/receita` | Receita total por categoria no período | `200` |
-| `GET` | `/relatorios/clientes/ticket-medio` | Ticket médio por cliente no período | `200` |
-
----
-
-## ✅ Exemplos de requisição e resposta
-
-### Criar pedido
-
+**Requisição**
 ```bash
 curl -X POST http://localhost:8080/pedidos \
   -H "Content-Type: application/json" \
@@ -179,7 +585,7 @@ curl -X POST http://localhost:8080/pedidos \
   }'
 ```
 
-Resposta `201`:
+**Resposta `201`**
 ```json
 {
   "id": 1,
@@ -195,17 +601,119 @@ Resposta `201`:
 }
 ```
 
----
+**Erro `404` — cliente inexistente**
+```json
+{
+  "timestamp": "2026-06-01T10:00:00",
+  "status": 404,
+  "mensagem": "Cliente com id 99 não encontrado."
+}
+```
 
-### Avançar status
+**Erro `400` — produto inativo**
+```json
+{
+  "timestamp": "2026-06-01T10:00:00",
+  "status": 400,
+  "mensagem": "O produto 'Camiseta Azul' está inativo e não pode ser adicionado ao pedido."
+}
+```
 
+**Erro `400` — estoque insuficiente**
+```json
+{
+  "timestamp": "2026-06-01T10:00:00",
+  "status": 400,
+  "mensagem": "Estoque insuficiente para o produto 'Boné Preto'. Disponível: 3, solicitado: 5."
+}
+```
+
+**Erro `400` — pedido sem itens**
+```json
+{
+  "timestamp": "2026-06-01T10:00:00",
+  "status": 400,
+  "mensagem": "Erro de validação em campos",
+  "erros": [
+    { "campo": "itens", "mensagem": "O pedido deve ter pelo menos 1 item." }
+  ]
+}
+```
+
+#### `GET /pedidos`
+
+Versão resumida — os itens aparecem apenas na busca por ID.
+
+**Resposta `200`**
+```json
+[
+  {
+    "id": 1,
+    "cliente": { "id": 1, "nome": "Ana Lima" },
+    "status": "PENDENTE",
+    "valor_total": 299.70,
+    "criado_em": "2026-06-01T10:00:00"
+  },
+  {
+    "id": 2,
+    "cliente": { "id": 2, "nome": "Carlos Souza" },
+    "status": "ENTREGUE",
+    "valor_total": 540.00,
+    "criado_em": "2026-05-28T14:20:00"
+  }
+]
+```
+
+**Com filtros** — `GET /pedidos?status=PENDENTE&cliente_id=1`
+```json
+[
+  {
+    "id": 1,
+    "cliente": { "id": 1, "nome": "Ana Lima" },
+    "status": "PENDENTE",
+    "valor_total": 299.70,
+    "criado_em": "2026-06-01T10:00:00"
+  }
+]
+```
+
+#### `GET /pedidos/{id}`
+
+**Resposta `200`**
+```json
+{
+  "id": 1,
+  "cliente": { "id": 1, "nome": "Ana Lima" },
+  "status": "CONFIRMADO",
+  "valor_total": 299.70,
+  "itens": [
+    { "produto_id": 3, "nome": "Camiseta Azul", "quantidade": 2, "preco_unitario": 89.90, "subtotal": 179.80 },
+    { "produto_id": 7, "nome": "Boné Preto", "quantidade": 1, "preco_unitario": 119.90, "subtotal": 119.90 }
+  ],
+  "criado_em": "2026-06-01T10:00:00",
+  "atualizado_em": "2026-06-01T10:15:00"
+}
+```
+
+**Erro `404`**
+```json
+{
+  "timestamp": "2026-06-01T10:00:00",
+  "status": 404,
+  "mensagem": "Pedido com id 99 não encontrado."
+}
+```
+
+#### `PATCH /pedidos/{id}/status`
+
+**Requisição**
 ```bash
 curl -X PATCH http://localhost:8080/pedidos/1/status \
   -H "Content-Type: application/json" \
   -d '{ "status": "CONFIRMADO" }'
 ```
 
-Resposta `200`:
+**Resposta `200`**
 ```json
 {
   "id": 1,
@@ -214,7 +722,16 @@ Resposta `200`:
 }
 ```
 
-Resposta `400` — transição inválida:
+**Erro `400` — transição inválida**
+```json
+{
+  "timestamp": "2026-06-01T10:15:00",
+  "status": 400,
+  "mensagem": "Transição inválida: pedido EM_PREPARO só pode ir para ENVIADO."
+}
+```
+
+**Erro `400` — estado final**
 ```json
 {
   "timestamp": "2026-06-01T10:15:00",
@@ -223,14 +740,69 @@ Resposta `400` — transição inválida:
 }
 ```
 
+**Erro `404`**
+```json
+{
+  "timestamp": "2026-06-01T10:15:00",
+  "status": 404,
+  "mensagem": "Pedido com id 99 não encontrado."
+}
+```
+
+#### `DELETE /pedidos/{id}`
+
+Cancela o pedido — muda o status para `CANCELADO`, se a transição for permitida.
+
+**Resposta `204`** — sem corpo.
+
+**Erro `400` — não pode cancelar**
+```json
+{
+  "timestamp": "2026-06-01T10:15:00",
+  "status": 400,
+  "mensagem": "Transição inválida: pedido ENTREGUE não pode ser cancelado."
+}
+```
+
+**Erro `404`**
+```json
+{
+  "timestamp": "2026-06-01T10:15:00",
+  "status": 404,
+  "mensagem": "Pedido com id 99 não encontrado."
+}
+```
+
 ---
 
-### Relatório — Resumo por status
+### 📊 Relatórios
+
+Os endpoints de relatório aceitam os query params `data_inicio` e `data_fim` (formato `YYYY-MM-DD`). **Ambos são obrigatórios.**
+
+| Método | Rota | Descrição | Sucesso |
+|---|---|---|---|
+| `GET` | `/relatorios/pedidos/resumo` | Total de pedidos e receita por status no período | `200` |
+| `GET` | `/relatorios/pedidos/por-dia` | Receita e quantidade de pedidos por dia | `200` |
+| `GET` | `/relatorios/produtos/mais-vendidos` | Ranking de produtos por quantidade e receita | `200` |
+| `GET` | `/relatorios/categorias/receita` | Receita total por categoria no período | `200` |
+| `GET` | `/relatorios/clientes/ticket-medio` | Ticket médio por cliente no período | `200` |
+
+> Se faltar `data_inicio` ou `data_fim`, retorne `400`:
+> ```json
+> {
+>   "timestamp": "2026-06-01T10:00:00",
+>   "status": 400,
+>   "mensagem": "Os parâmetros 'data_inicio' e 'data_fim' são obrigatórios."
+> }
+> ```
+
+#### `GET /relatorios/pedidos/resumo`
 
 ```bash
 curl "http://localhost:8080/relatorios/pedidos/resumo?data_inicio=2026-01-01&data_fim=2026-01-31"
 ```
 
+**Resposta `200`**
 ```json
 {
   "periodo": { "inicio": "2026-01-01", "fim": "2026-01-31" },
@@ -245,14 +817,35 @@ curl "http://localhost:8080/relatorios/pedidos/resumo?data_inicio=2026-01-01&dat
 }
 ```
 
----
+#### `GET /relatorios/pedidos/por-dia`
 
-### Relatório — Produtos mais vendidos
+```bash
+curl "http://localhost:8080/relatorios/pedidos/por-dia?data_inicio=2026-01-01&data_fim=2026-01-31"
+```
+
+**Resposta `200`**
+```json
+{
+  "periodo": { "inicio": "2026-01-01", "fim": "2026-01-31" },
+  "dias": [
+    { "data": "2026-01-01", "quantidade_pedidos": 12, "receita": 1850.00 },
+    { "data": "2026-01-02", "quantidade_pedidos": 8, "receita": 1320.50 },
+    { "data": "2026-01-03", "quantidade_pedidos": 15, "receita": 2410.00 }
+  ],
+  "total_pedidos": 353,
+  "receita_total": 50850.00
+}
+```
+
+> Ordene os dias em ordem crescente de data. Dias sem pedidos podem ser omitidos (mais simples) ou preenchidos com zero (mais completo) — documente sua escolha.
+
+#### `GET /relatorios/produtos/mais-vendidos`
 
 ```bash
 curl "http://localhost:8080/relatorios/produtos/mais-vendidos?data_inicio=2026-01-01&data_fim=2026-01-31"
 ```
 
+**Resposta `200`**
 ```json
 {
   "periodo": { "inicio": "2026-01-01", "fim": "2026-01-31" },
@@ -263,14 +856,32 @@ curl "http://localhost:8080/relatorios/produtos/mais-vendidos?data_inicio=2026-0
 }
 ```
 
----
+#### `GET /relatorios/categorias/receita`
 
-### Relatório — Ticket médio por cliente
+```bash
+curl "http://localhost:8080/relatorios/categorias/receita?data_inicio=2026-01-01&data_fim=2026-01-31"
+```
+
+**Resposta `200`**
+```json
+{
+  "periodo": { "inicio": "2026-01-01", "fim": "2026-01-31" },
+  "categorias": [
+    { "posicao": 1, "id": 1, "nome": "Roupas", "quantidade_vendida": 412, "receita": 28750.00 },
+    { "posicao": 2, "id": 2, "nome": "Acessórios", "quantidade_vendida": 198, "receita": 15300.00 },
+    { "posicao": 3, "id": 3, "nome": "Calçados", "quantidade_vendida": 95, "receita": 6800.00 }
+  ],
+  "receita_total": 50850.00
+}
+```
+
+#### `GET /relatorios/clientes/ticket-medio`
 
 ```bash
 curl "http://localhost:8080/relatorios/clientes/ticket-medio?data_inicio=2026-01-01&data_fim=2026-01-31"
 ```
 
+**Resposta `200`**
 ```json
 {
   "periodo": { "inicio": "2026-01-01", "fim": "2026-01-31" },
@@ -281,12 +892,29 @@ curl "http://localhost:8080/relatorios/clientes/ticket-medio?data_inicio=2026-01
 }
 ```
 
+> `ticket_medio = receita_total / total_pedidos`. O esperado é **não** contar pedidos `CANCELADO` na receita.
+
 ---
 
-## ❌ Exemplos de erro
+## ❌ Catálogo de erros
 
-### Produto inativo no pedido — `400`
+Use este resumo para padronizar as mensagens e cobrir os casos nos testes.
 
+| Situação | Status | Mensagem (exemplo) |
+|---|---|---|
+| Campo inválido no corpo | `400` | `Erro de validação em campos` (+ array `erros`) |
+| Transição de status inválida | `400` | `Transição inválida: pedido X não pode mudar de status.` |
+| Produto inativo no pedido | `400` | `O produto 'X' está inativo e não pode ser adicionado ao pedido.` |
+| Estoque insuficiente | `400` | `Estoque insuficiente para o produto 'X'. Disponível: N, solicitado: M.` |
+| Remover cliente com pedidos | `400` | `Não é possível remover o cliente 'X' pois ele possui N pedido(s)...` |
+| Remover categoria com produtos | `400` | `Não é possível remover a categoria 'X' pois existem N produto(s)...` |
+| Parâmetros de relatório ausentes | `400` | `Os parâmetros 'data_inicio' e 'data_fim' são obrigatórios.` |
+| Recurso não encontrado | `404` | `X com id N não encontrado.` |
+| E-mail / nome duplicado | `409` | `Já existe um(a) X com ...` |
+
+### Exemplos detalhados
+
+**Produto inativo no pedido — `400`**
 ```json
 {
   "timestamp": "2026-06-01T10:00:00",
@@ -295,8 +923,7 @@ curl "http://localhost:8080/relatorios/clientes/ticket-medio?data_inicio=2026-01
 }
 ```
 
-### Estoque insuficiente — `400`
-
+**Estoque insuficiente — `400`**
 ```json
 {
   "timestamp": "2026-06-01T10:00:00",
@@ -305,8 +932,7 @@ curl "http://localhost:8080/relatorios/clientes/ticket-medio?data_inicio=2026-01
 }
 ```
 
-### Erro de validação em campos — `400`
-
+**Erro de validação em campos — `400`**
 ```json
 {
   "timestamp": "2026-06-01T10:00:00",
@@ -346,6 +972,43 @@ Terminou tudo? Tente implementar também:
 - **Paginação nas listagens** — `GET /pedidos?page=0&size=20`
 - **Restaurar estoque ao cancelar** — ao cancelar um pedido, devolva a quantidade dos itens ao estoque de cada produto
 
+### Modelos de resposta dos bônus
+
+**Filtro de produtos por categoria** — `GET /produtos?categoria_id=1`
+```json
+[
+  {
+    "id": 3,
+    "nome": "Camiseta Azul",
+    "preco": 89.90,
+    "estoque": 50,
+    "categoria": { "id": 1, "nome": "Roupas" },
+    "ativo": true
+  }
+]
+```
+
+**Paginação (estilo `Page` do Spring)** — `GET /pedidos?page=0&size=20`
+```json
+{
+  "content": [
+    {
+      "id": 1,
+      "cliente": { "id": 1, "nome": "Ana Lima" },
+      "status": "PENDENTE",
+      "valor_total": 299.70,
+      "criado_em": "2026-06-01T10:00:00"
+    }
+  ],
+  "page": 0,
+  "size": 20,
+  "total_elements": 142,
+  "total_pages": 8,
+  "first": true,
+  "last": false
+}
+```
+
 ---
 
 ## 🌱 Script de seed
@@ -380,6 +1043,7 @@ Consulte o [CONTRIBUTING.md](../../CONTRIBUTING.md) para ver como compartilhar s
 - **O `valor_total` do pedido é calculado** — some `quantidade × preco_unitario` de cada item no momento da criação
 - **O `preco_unitario` do item é fixo** — copie o preço do produto ao criar o item, não guarde referência
 - **Valide o estoque antes de criar o pedido** — verifique se tem unidades disponíveis e atualize após confirmar
+- **Centralize o tratamento de erro** — um `@ControllerAdvice` único mantém todas as respostas no formato padrão
 - **Testes automatizados e Docker são diferenciais**, não requisitos
 
 Boa sorte! 💙
